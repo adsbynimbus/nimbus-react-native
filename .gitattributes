@@ -1,0 +1,17 @@
+# Set the default behavior, in case people don't have core.autocrlf set.
+* text=auto
+
+# React Native sets this when starting a new project
+*.pbxproj -text
+
+# Explicitly declare text files you want to always be normalized and converted
+# to native line endings on checkout.
+#*.js text
+
+# Declare files that will always have CRLF line endings on checkout.
+*.bat text eol=crlf
+*.sh text eol=lf
+
+*.aar filter=lfs diff=lfs merge=lfs -text
+*.png filter=lfs diff=lfs merge=lfs -text
+*.webm filter=lfs diff=lfs merge=lfs -text

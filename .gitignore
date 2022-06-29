@@ -1,0 +1,30 @@
+# Android
+bin/
+gen/
+classes/
+gen-external-apklibs/
+build/
+schemas/
+.gradle/
+*.keystore
+*.iml
+.idea/
+local.properties
+
+# iOS
+Pods/
+xcuserdata/
+xcshareddata/
+
+# JS / TS
+*.lock
+*.jsbundle
+package-lock.json
+node_modules/
+
+# Other
+.DS_Store
+*.log
+
+# VS Code
+.vscode/

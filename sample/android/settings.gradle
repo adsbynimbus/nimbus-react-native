@@ -1,0 +1,62 @@
+pluginManagement {
+  repositories {
+    google()
+    mavenCentral()
+    gradlePluginPortal()
+  }
+}
+
+dependencyResolutionManagement {
+  repositories {
+    mavenLocal()
+    maven {
+      // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
+      url(new File(['node', '--print', "require.resolve('react-native/package.json')"].execute(null, rootDir).text.trim(), '../android'))
+    }
+    maven {
+      // Android JSC is installed from npm
+      url(new File(['node', '--print', "require.resolve('jsc-android/package.json')"].execute(null, rootDir).text.trim(), '../dist'))
+    }
+
+    google()
+    mavenCentral {
+      content {
+        excludeGroup 'com.facebook.react'
+      }
+    }
+    if (providers.environmentVariable("GITHUB_ACTIONS").forUseAtConfigurationTime().isPresent()) {
+      // If running in Github Actions, use Github packages because it"s free
+      maven {
+        url("https://maven.pkg.github.com/timehop/nimbus-openrtb")
+        name = "openrtb"
+        credentials(PasswordCredentials)
+        content {
+          includeGroup("com.adsbynimbus.openrtb")
+        }
+      }
+    }
+    maven {
+      url("https://adsbynimbus-public.s3.amazonaws.com/android/sdks")
+      credentials {
+        username = "*"
+      }
+      content {
+        includeGroup("com.adsbynimbus.android")
+        includeGroup("com.adsbynimbus.openrtb")
+        includeGroup("com.amazon.android")
+        includeGroup("com.iab.omid.library.adsbynimbus")
+      }
+    }
+    maven { url 'https://www.jitpack.io' }
+  }
+}
+
+rootProject.name = 'nimbus-react-native-sample'
+
+apply from: new File(["node", "--print", "require.resolve('@react-native-community/cli-platform-android/package.json')"].execute(null, rootDir).text.trim(), "../native_modules.gradle");
+applyNativeModulesSettingsGradle(settings)
+
+include ':app'
+include ':adsbynimbus_nimbus'
+
+project(':adsbynimbus_nimbus').projectDir = new File(rootProject.projectDir, '../../packages/nimbus/android')

@@ -1,0 +1,12 @@
+{
+    "extends": "../tsconfig",
+    "files": [
+      "./app.json"
+    ],
+    "references": [
+      { "path": "../packages/nimbus" },
+    ],
+    "compilerOptions": {
+      // Avoid expo-cli auto-generating a tsconfig
+    }
+  }

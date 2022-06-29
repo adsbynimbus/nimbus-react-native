@@ -1,0 +1,79 @@
+{
+  "name": "@adsbynimbus/nimbus",
+  "version": "0.0.1",
+  "description": "Nimbus SDK wrapper for React Native",
+  "main": "lib/commonjs/index.js",
+  "react-native": "src/index.tsx",
+  "source": "src/index.tsx",
+  "module": "lib/module/index.js",
+  "types": "lib/typescript/src/index.d.ts",
+  "files": [
+    "src",
+    "lib",
+    "android",
+    "ios",
+    "!android/build",
+    "!ios/build",
+    "!**/__tests__",
+    "!**/__fixtures__",
+    "!**/__mocks__"
+  ],
+  "scripts": {
+    "prepare": "bob build",
+    "clean": "del lib"
+  },
+  "keywords": [
+    "react-native",
+    "ios",
+    "android",
+    "ads",
+    "adsbynimbus",
+    "nimbus"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/timehop/nimbus-react-native.git",
+    "directory": "packages/nimbus"
+  },
+  "author": "Inder Dhir <inder@timehop.com> (https://github.com/inderdhir)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/timehop/nimbus-react-native/issues"
+  },
+  "homepage": "https://github.com/timehop/nimbus-react-native#readme",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
+  "devDependencies": {
+    "@react-native-community/eslint-config": "^2.0.0",
+    "@types/jest": "^26.0.0",
+    "@types/react": "16.4.16",
+    "@types/react-native": "0.63.53",
+    "eslint": "^7.2.0",
+    "eslint-config-prettier": "^7.0.0",
+    "eslint-plugin-prettier": "^3.1.3",
+    "jest": "^26.0.1",
+    "react": "16.13.1",
+    "react-native": "0.63.4",
+    "react-native-builder-bob": "^0.18.2",
+    "typescript": "^4.7.4"
+  },
+  "peerDependencies": {
+    "react": "*",
+    "react-native": "*"
+  },
+  "react-native-builder-bob": {
+    "source": "src",
+    "output": "lib",
+    "targets": [
+      "commonjs",
+      "module",
+      [
+        "typescript",
+        {
+          "project": "tsconfig.build.json"
+        }
+      ]
+    ]
+  }
+}

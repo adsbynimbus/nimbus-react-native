@@ -1,0 +1,56 @@
+{
+    "description": "Nimbus SDK and Sample App for React Native",
+    "private": true,
+    "workspaces": {
+      "packages": [
+        "packages/*",
+        "sample"
+      ]
+    },
+    "publishConfig": {
+      "access": "public"
+    },
+    "license": "MIT",
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/timehop/nimbus-react-native.git"
+    },
+    "author": "Jason Sznol <jason@timehop.com> (https://github.com/JasonSznol/), Inder Dhir <inder@timehop.com> (https://github.com/inderdhir/)",
+    "scripts": {
+      "lint": "eslint \"**/*.{js,ts,tsx}\"",
+      "typescript": "tsc --noEmit --composite false",
+      "test": "jest"
+    },
+    "devDependencies": {
+      "@babel/core": "^7.12.9",
+      "@babel/generator": "^7.15.4",
+      "@types/jest": "^26.0.0",
+      "babel-jest": "^26.6.3",
+      "eslint": "^7.2.0",
+      "eslint-config-prettier": "^7.0.0",
+      "eslint-plugin-prettier": "^3.1.3",
+      "jest": "^26.0.1",
+      "metro-react-native-babel-preset": "^0.64.0",
+      "prettier": "^2.3.0",
+      "typescript": "^4.7.4"
+    },
+    "jest": {
+      "testEnvironment": "node",
+      "testRegex": "/__tests__/.*\\.(test|spec)\\.(js|tsx?)$",
+      "transformIgnorePatterns": [
+        "node_modules/(?!(@react-native|react-native|react-native-iphone-x-helper)/)"
+      ],
+      "moduleNameMapper": {
+        "@adsbynimbus/([^/]+)": "<rootDir>/packages/$1/src"
+      },
+      "preset": "react-native"
+    },
+    "prettier": {
+      "quoteProps": "consistent",
+      "tabWidth": 2,
+      "useTabs": false,
+      "singleQuote": true,
+      "trailingComma": "es5"
+    }
+  }
+  

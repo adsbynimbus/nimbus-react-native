@@ -1,0 +1,147 @@
+buildscript {
+  // Buildscript is evaluated before everything else so we can't use getExtOrDefault
+  def kotlin_version = rootProject.ext.has('kotlinVersion') ? rootProject.ext.get('kotlinVersion') : project.properties['NimbusReactNative_kotlinVersion']
+
+  repositories {
+    google()
+    mavenCentral()
+  }
+
+  dependencies {
+    classpath 'com.android.tools.build:gradle:7.2.1'
+    // noinspection DifferentKotlinGradleVersion
+    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+  }
+}
+
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+
+def providerWithFallback(name) {
+  return rootProject.ext.has(name) ? providers.of(ootProject.ext.get(name)) :
+    providers.gradleProperty("NimbusReactNative_" + name)
+}
+
+def minSdk = providers.gradleProperty("android.minSdk")
+  .orElse(providerWithFallback("minSdkVersion"))
+  .orElse(19)
+def compileSdk = providers.gradleProperty("android.compileSdk")
+  .orElse(providerWithFallback("compileSdkVersion"))
+  .orElse(32)
+def targetSdk =
+  providers.gradleProperty("android.targetSdk")
+    .orElse(providerWithFallback("targetSdkVersion"))
+    .orElse(compileSdk)
+
+android {
+  compileSdkVersion compileSdk.get()
+  defaultConfig {
+    minSdkVersion minSdk.get()
+    targetSdkVersion targetSdk.get()
+    versionCode 1
+    versionName "0.0.1"
+  }
+
+  buildTypes {
+    release {
+      minifyEnabled false
+    }
+  }
+  lintOptions {
+    disable 'GradleCompatible'
+  }
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+  }
+}
+
+repositories {
+  google()
+  mavenCentral()
+
+  def found = false
+  def defaultDir = null
+  def androidSourcesName = 'React Native sources'
+
+  if (rootProject.ext.has('reactNativeAndroidRoot')) {
+    defaultDir = rootProject.ext.get('reactNativeAndroidRoot')
+  } else {
+    defaultDir = new File(projectDir, '../../../node_modules/react-native/android')
+  }
+
+  if (defaultDir.exists()) {
+    maven {
+      url defaultDir.toString()
+      name androidSourcesName
+    }
+
+    logger.info(":${project.name}:reactNativeAndroidRoot ${defaultDir.canonicalPath}")
+    found = true
+  } else {
+    def parentDir = rootProject.projectDir
+
+    1.upto(5, {
+      if (found) return true
+      parentDir = parentDir.parentFile
+
+      def androidSourcesDir = new File(
+        parentDir,
+        '../../node_modules/react-native'
+      )
+
+      def androidPrebuiltBinaryDir = new File(
+        parentDir,
+        '../../node_modules/react-native/android'
+      )
+
+      if (androidPrebuiltBinaryDir.exists()) {
+        maven {
+          url androidPrebuiltBinaryDir.toString()
+          name androidSourcesName
+        }
+
+        logger.info(":${project.name}:reactNativeAndroidRoot ${androidPrebuiltBinaryDir.canonicalPath}")
+        found = true
+      } else if (androidSourcesDir.exists()) {
+        maven {
+          url androidSourcesDir.toString()
+          name androidSourcesName
+        }
+
+        logger.info(":${project.name}:reactNativeAndroidRoot ${androidSourcesDir.canonicalPath}")
+        found = true
+      }
+    })
+  }
+
+  if (!found) {
+    throw new GradleException(
+      "${project.name}: unable to locate React Native android sources. " +
+        "Ensure you have you installed React Native as a dependency in your project and try again."
+    )
+  }
+
+  maven {
+    url = uri("https://adsbynimbus-public.s3.amazonaws.com/android/sdks")
+    credentials {
+      username = "*"
+    }
+    content {
+      includeGroup("com.adsbynimbus.android")
+      includeGroup("com.adsbynimbus.openrtb")
+      includeGroup("com.amazon.android")
+      includeGroup("com.iab.omid.library.adsbynimbus")
+    }
+  }
+}
+
+dependencies {
+  // noinspection GradleDynamicVersion
+  api 'com.facebook.react:react-native:+'
+
+  def nimbusVersion = "1.11.5"
+  implementation("com.adsbynimbus.android:nimbus:$nimbusVersion")
+  implementation("com.adsbynimbus.android:extension-exoplayer:$nimbusVersion")
+  implementation("com.adsbynimbus.android:extension-okhttp:$nimbusVersion")
+}
